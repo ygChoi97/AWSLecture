@@ -1,0 +1,32 @@
+#!/bin/bash
+
+project_name=spring_webprj4
+
+echo "# start deployment!!"
+
+echo "# shutdown tomcat"
+cd /usr/local/tomcat/bin
+./shutdown.sh
+
+rm -rf /usr/local/tomcat/webapps/ROOT
+
+cd /usr/local/project/${project_name}
+
+echo "# git pull!!"
+git pull origin master
+
+echo "# start build!"
+./gradlew clean
+./gradlew build
+
+echo "# move ROOT.war"
+cd /usr/local/tomcat/webapps
+cp /usr/local/project/${project_name}/build/libs/ROOT.war .
+
+echo "# tomcat start!!"
+cd /usr/local/tomcat/bin
+./startup.sh
+
+echo "# finish deployment..."
+
+exit 0
